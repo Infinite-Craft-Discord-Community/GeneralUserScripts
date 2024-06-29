@@ -568,7 +568,7 @@
 	        for (const elementRecipe of elementRecipes) {
 	            const recipeDiv = document.createElement('div');
 	            recipeDiv.classList.add('recipe');
-
+        let addSpace=false;
 				const firstElement = unsafeWindow.$nuxt.$root.$children[2].$children[0].$children[0]._data.elements.find((e) => e.text === elementRecipe[0].text) ?? elementRecipe[0];
 	            const firstDiv = document.createElement('div');
 	            firstDiv.classList.add('item');
@@ -577,7 +577,24 @@
 	            firstEmoji.classList.add('item-emoji');
 	            firstEmoji.appendChild(document.createTextNode(firstElement.emoji ?? '⬜'));
 	            firstDiv.appendChild(firstEmoji);
-	            firstDiv.appendChild(document.createTextNode(` ${firstElement.text} `));
+	        firstDiv.appendChild(document.createTextNode(` ${firstElement.text} `));
+            if([...firstElement.text].length === 1)
+	        {
+            let tooltips=(`U+${firstElement.text.codePointAt().toString(16).toUpperCase().padStart(4, "0")}`);
+            let toolTipDiv=document.createElement("div");
+            toolTipDiv.appendChild(document.createTextNode(tooltips));
+            firstDiv.style.position="relative";
+            toolTipDiv.style.position="absolute";
+            toolTipDiv.style.top="-16px";
+	          toolTipDiv.style.left="0";
+            toolTipDiv.style.zIndex="2";
+            toolTipDiv.style.textAlign="center";
+            toolTipDiv.style.fontSize="12px";
+            toolTipDiv.style.textAlign="center";
+            toolTipDiv.style.width="100%";
+            firstDiv.appendChild(toolTipDiv);
+            addSpace=true;
+          }
 				firstDiv.addEventListener('mousedown', (e) => {
 					e.stopPropagation();
 					if (e.button === 2) return openCraftsForElement(firstElement);
@@ -586,6 +603,7 @@
 	        	});
 	            recipeDiv.appendChild(firstDiv);
 	            recipeDiv.appendChild(document.createTextNode('+'));
+
 
 				const secondElement = unsafeWindow.$nuxt.$root.$children[2].$children[0].$children[0]._data.elements.find((e) => e.text === elementRecipe[1].text) ?? elementRecipe[1];
 	            const secondDiv = document.createElement('div');
@@ -596,6 +614,23 @@
 	            secondEmoji.appendChild(document.createTextNode(secondElement.emoji ?? '⬜'));
 	            secondDiv.appendChild(secondEmoji);
 	            secondDiv.appendChild(document.createTextNode(` ${secondElement.text} `));
+                if([...secondElement.text].length === 1)
+	        {
+            let tooltips=(`U+${secondElement.text.codePointAt().toString(16).toUpperCase().padStart(4, "0")}`);
+            let toolTipDiv=document.createElement("div");
+            toolTipDiv.appendChild(document.createTextNode(tooltips));
+            secondDiv.style.position="relative";
+            toolTipDiv.style.position="absolute";
+            toolTipDiv.style.top="-16px";
+	          toolTipDiv.style.left="0";
+            toolTipDiv.style.zIndex="2";
+            toolTipDiv.style.fontSize="12px";
+            toolTipDiv.style.textAlign="center";
+            toolTipDiv.style.width="100%";
+            secondDiv.appendChild(toolTipDiv);
+            addSpace=true;
+
+          }
 				secondDiv.addEventListener('mousedown', (e) => {
 					e.stopPropagation();
 					if (e.button === 2) return openCraftsForElement(secondElement);
@@ -611,7 +646,27 @@
 	            resultEmoji.appendChild(document.createTextNode(element.emoji ?? '⬜'));
 	            resultDiv.appendChild(resultEmoji);
 	            resultDiv.appendChild(document.createTextNode(` ${element.text} `));
+          if([...element.text].length === 1)
+	        {
+            resultDiv.style.position="relative";
+            let tooltips=(`U+${element.text.codePointAt().toString(16).toUpperCase().padStart(4, "0")}`);
+            let toolTipDiv=document.createElement("div");
+            toolTipDiv.appendChild(document.createTextNode(tooltips));
+            toolTipDiv.style.position="absolute";
+            toolTipDiv.style.top="-16px";
+	          toolTipDiv.style.left="0";
+            toolTipDiv.style.zIndex="2";
+            toolTipDiv.style.fontSize="12px";
+            toolTipDiv.style.textAlign="center";
+            toolTipDiv.style.width="100%";
+            resultDiv.appendChild(toolTipDiv);
+             addSpace=true;
+
+
+          }
 	            recipeDiv.appendChild(resultDiv);
+            if(addSpace)
+              recipeDiv.style.marginTop=recipeDiv.style.marginBottom="15px";
 	            craftsContainer.appendChild(recipeDiv);
 	        }
 	    }
