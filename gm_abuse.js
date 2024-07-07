@@ -46,6 +46,7 @@ function decodeElements(raw) {
 	unsafeWindow._setItem = unsafeWindow.Storage.prototype.setItem;
 	unsafeWindow._removeItem = unsafeWindow.Storage.prototype.removeItem;
 
+	let initialized = false;
 	async function init() {
 		const rawElements = await GM.getValue("elements");
 		let newElements = JSON.parse((await GM.getValue("newElements")) ?? "[]"),
@@ -88,12 +89,12 @@ function decodeElements(raw) {
 			if (args[0] !== "infinite-craft-data") return item;
 			return JSON.stringify({
 				...JSON.parse(item),
-				elements
+				elements: elements.concat(newElements)
 			});
 		}, unsafeWindow);
 
 		unsafeWindow.Storage.prototype.setItem = exportFunction(function(...args) {
-			if (args[0] !== "infinite-craft-data") return unsafeWindow._setItem.apply(this, args);
+			if (!initialized || args[0] !== "infinite-craft-data") return unsafeWindow._setItem.apply(this, args);
 
 			const newSave = JSON.parse(args[1]);
 			let hasRemoved = false;
@@ -141,7 +142,10 @@ function decodeElements(raw) {
 			unsafeWindow._removeItem.apply(this, args);
 		}, unsafeWindow);
 
-		setTimeout(() => unsafeWindow.$nuxt.$root.$children[2].$children[0].$children[0]._data.elements = JSON.parse(JSON.stringify(elements)), 200);
+		setTimeout(() => {
+			unsafeWindow.$nuxt.$root.$children[2].$children[0].$children[0]._data.elements = JSON.parse(JSON.stringify(elements));
+			initialized = true;
+		}, 200);
 		await GM.setValue("elements", encodeElements(elements));
 	}
 
